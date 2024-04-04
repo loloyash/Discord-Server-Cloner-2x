@@ -12,7 +12,7 @@ export function choiceinit(client: Client) {
   };
   rl.question(
     gradient(["purple", "pink"])(t("optionPrompt")),
-    async (choice) => {
+    async (choice: string) => {
       choice = choice.trim();
       switch (choice) {
         case "":
@@ -84,9 +84,11 @@ export function creatorname() {
 
 export function menutext(client: Client) {
   creatorname();
-  console.log(gradient(["#ff4500", "#ffa500", "#ff6347"])(t("menuText")));
+  const goodbyegudog = langat !== "en" ? gradient(["#2180db", "#75a1cb", "#78a5d3"])(["[0] Nos despedimos do Gudog com carinho, Adeus gudog\n","[0] Em homenagem ao gudog, Descanse em paz\n","[0] Em memória do Gudog, um administrador que nos deixou. Adeus, amigo\n"][Math.floor(Math.random() * 3)]) : null;
+  console.log((goodbyegudog ? goodbyegudog : '') + gradient(["#ff4500", "#ffa500", "#ff6347"])(t("menuText")));
   choiceinit(client);
 }
+
 
 export function infouser(client: Client) {
   creatorname();
@@ -134,19 +136,26 @@ export async function Cloner(
 
   const proceedWithCloning = async () => {
     try {
+      creatorname();
       await client.guilds.fetch();
       const guild = client.guilds.cache.get(guildId1);
-
       if (!guild) {
         console.error(gradient(["red", "darkred"])(
           t('idservererror')
         ));
-        errors++;
-        rl.close();
+        setTimeout(() => {
+          clearall();
+        }, 20000);
         return;
       }
-
       if (createNewServer) {
+        /*if (client.guilds.cache.size > 100 || (client.user?.nitroType !== 'NONE' && client.guilds.cache.size <= 200)) {
+          console.error(gradient(["red", "darkred"])(t('svrlimitt')));
+          setTimeout(() => {
+            clearall();
+          }, 20000);
+          return;
+        }*/
         const newGuild = await client.guilds.create(
           'Infinite Community Cloner',
           {
@@ -156,7 +165,7 @@ export async function Cloner(
         );
 
         if (!newGuild) {
-          console.error(gradient(["red", "darkred"])('Acontecu um erro fatal na criação do servidor, o clonador será reiniciado em 10 segundos'));
+          console.error(gradient(["red", "darkred"])('Aconteceu um erro fatal na criação do servidor, o clonador será reiniciado em 10 segundos'));
           errors++;
           setTimeout(() => {
             clearall();
@@ -245,17 +254,18 @@ export async function Cloner(
       const exetimes = endtime[0] + endtime[1] / 1e9;
       const Tempo = Tempoex(exetimes);
     } catch (error) {
-      console.error(gradient(["red", "darkred"])('Ocorreu um erro durante a clonagem: ', error));
+      console.error('Ocorreu um erro específico durante a clonagem: ', error);
       errors++;
       rl.close();
     }
+    
   };
 
-  rl.question(gradient(["#FF5733", "#FF0000", "#A40000"])(t('ServerID')), async (guildId) => {
+  rl.question(gradient(["#5bb409", "#6ed60e", "#e8fad8"])(t('ServerID')), async (guildId: string) => {
     guildId1 = guildId;
 
     if (!createNewServer) {
-      rl.question(gradient(["#FF5733", "#FF0000", "#A40000"])(t('ServerID2')), (destinationId) => {
+      rl.question(gradient(["#5bb409", "#6ed60e", "#e8fad8"])(t('ServerID2')), (destinationId: string) => {
         GUILD_ID = destinationId;
         proceedWithCloning();
       });
@@ -350,7 +360,7 @@ export async function serverinfo(client: Client) {
   }
   rl.question(
     gradient(["purple", "pink"])(t('ServerID')),
-    (guildId) => {
+    (guildId: string) => {
       fetchGuildData(guildId);
     }
   );
@@ -365,18 +375,19 @@ export const configOptions: any = {
   jsonBeautify: true,
   doNotBackup: ["bans", "emojis"],
 };
+
 export async function configop(client: Client, functionName: string) {
   creatorname();
   console.log(
     gradient(["purple", "pink"])(t('configcloner'))
   );
+
   let clearall = () => {
     console.clear();
     creatorname();
     menutext(client);
     choiceinit(client);
   };
-
 
   while (true) {
     const tableContent = `
@@ -469,14 +480,17 @@ export async function configop(client: Client, functionName: string) {
         }
         switch (functionName) {
           case "Clonerop1choice":
+            console.clear();
             creatorname();
             await Cloner(client, configOptions, 1, true);
             break;
           case "Clonerop2choice":
+            console.clear();
             creatorname();
             await Cloner(client, configOptions, 2, false);
             break;
           case "Clonerop3choice":
+            console.clear();
             creatorname();
             await Cloner(client, configOptions, 3, true);
             break;
@@ -488,14 +502,17 @@ export async function configop(client: Client, functionName: string) {
       } else if (choice === "2") {
         switch (functionName) {
           case "Clonerop1choice":
+            console.clear();
             creatorname();
             await Cloner(client, configOptions, 1, true);
             break;
           case "Clonerop2choice":
+            console.clear();
             creatorname();
             await Cloner(client, configOptions, 2, false);
             break;
           case "Clonerop3choice":
+            console.clear();
             creatorname();
             await Cloner(client, configOptions, 3, true);
             break;
@@ -528,7 +545,7 @@ async function yop(question: string): Promise<boolean> {
 
 function espop(question: string): Promise<string> {
   return new Promise((resolve) => {
-    rl.question(question, (answer) => {
+    rl.question(question, (answer: string) => {
       resolve(answer.trim());
     });
   });
